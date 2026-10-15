@@ -5,13 +5,14 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
       - name: XcodeGen
         run: brew install xcodegen && xcodegen generate
       - name: Build (sem assinar)
         run: |
+          set -o pipefail
           xcodebuild -project AnotaAI.xcodeproj -scheme AnotaAI \
             -destination 'generic/platform=iOS' -configuration Release \
             -derivedDataPath build \
