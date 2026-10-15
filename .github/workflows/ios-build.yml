@@ -22,3 +22,14 @@ jobs:
         with:
           name: AnotaAI-app
           path: build/Build/Products/Release-iphoneos/*.app
+      - name: Empacota o .ipa (sem assinatura)
+        run: |
+          mkdir -p ipa/Payload
+          cp -R build/Build/Products/Release-iphoneos/*.app ipa/Payload/
+          (cd ipa && zip -qry AnotaAI.ipa Payload)
+          ls -la ipa/AnotaAI.ipa
+      - name: Guarda o .ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: AnotaAI-ipa
+          path: ipa/AnotaAI.ipa

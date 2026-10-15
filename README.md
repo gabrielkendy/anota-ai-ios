@@ -11,6 +11,23 @@ App nativo (SwiftUI + Speech framework) com o MESMO backend
   cria a nota (`/v1/create-document`) e anexa a transcricao
   (`/v1/insert-transcriptions`).
 
+## Status do build
+- **Compila verde na CI** — GitHub Actions, runner macOS 15 (Xcode 16).
+- Ultimo run verde: 15/10/2026, workflow "iOS Build" (`workflow_dispatch`).
+- Artefatos do run: `AnotaAI-app` (o .app) e `AnotaAI-ipa` (o .ipa sem assinatura).
+- Copia local pronta para instalar: `dist/ANOTA-AI-iOS-0.1.0.ipa`.
+
+## Como instalar no iPhone (sem Mac)
+1. Instale o Sideloadly no Windows: https://sideloadly.io
+2. Conecte o iPhone por cabo e abra o Sideloadly.
+3. Arraste `dist/ANOTA-AI-iOS-0.1.0.ipa` para dentro do Sideloadly.
+4. Digite seu Apple ID quando ele pedir (fica so no seu PC, nada vai para servidor).
+5. Clique "Start" — ele assina com o seu ID e instala no aparelho.
+
+Obs: com Apple ID gratis o app fica valido por 7 dias (rodar o Sideloadly de novo
+renova). Com conta Apple Developer (US$ 99/ano) vale 1 ano, sem re-assinar.
+Sem conta nenhuma nao instala: a Apple exige assinatura para app fora da loja.
+
 ## Estrutura
 ```
 mobile-ios/
@@ -32,12 +49,7 @@ open AnotaAI.xcodeproj     # selecione seu time (Signing) e rode
 ```
 
 ## Build via CI (sem Mac)
-Workflow pronto em `.github/workflows/ios-build.yml` (runner macOS):
-compila com `CODE_SIGNING_ALLOWED=NO` e guarda o `.app` como artefato.
-Para instalar no iPhone de verdade: conta Apple Developer (assinatura)
-ou build assinado pelo Xcode.
-
-## Pendencia honesta
-Este codigo foi escrito com cuidado, mas NAO compilado ainda (nao ha Mac
-nesta maquina). O primeiro build no Mac/CI pode pedir ajustes de detalhe.
-O contrato com o backend e o mesmo ja provado no Android.
+Workflow em `.github/workflows/ios-build.yml` (runner macOS):
+compila com `CODE_SIGNING_ALLOWED=NO`, guarda o `.app` e empacota o `.ipa`
+(`Payload/ANOTA AI.app`) como artefatos do run. Os dois downloads ficam na
+pagina do run, em "Artifacts".

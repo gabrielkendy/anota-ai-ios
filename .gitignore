@@ -1,0 +1,6 @@
+# saida de build — nao versionar
+dist/
+build/
+AnotaAI.xcodeproj/
+xcuserdata/
+DerivedData/
