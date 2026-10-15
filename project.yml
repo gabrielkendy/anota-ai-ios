@@ -1,0 +1,26 @@
+name: AnotaAI
+options:
+  bundleIdPrefix: ai.anota
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+targets:
+  AnotaAI:
+    type: application
+    platform: iOS
+    sources:
+      - AnotaAI
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.anota.app
+        PRODUCT_NAME: ANOTA AI
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: ANOTA AI
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "O ANOTA AI usa o microfone para transcrever suas reunioes."
+        INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: "O ANOTA AI transcreve sua fala em texto usando o reconhecimento do sistema."
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "5.0"
+        CODE_SIGN_STYLE: Automatic

@@ -1,0 +1,23 @@
+name: iOS Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: XcodeGen
+        run: brew install xcodegen && xcodegen generate
+      - name: Build (sem assinar)
+        run: |
+          xcodebuild -project AnotaAI.xcodeproj -scheme AnotaAI \
+            -destination 'generic/platform=iOS' -configuration Release \
+            -derivedDataPath build \
+            build CODE_SIGNING_ALLOWED=NO 2>&1 | tail -40
+      - name: Guarda o .app
+        uses: actions/upload-artifact@v4
+        with:
+          name: AnotaAI-app
+          path: build/Build/Products/Release-iphoneos/*.app
