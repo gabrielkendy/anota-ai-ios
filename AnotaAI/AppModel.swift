@@ -7,6 +7,7 @@ final class AppModel: ObservableObject {
     @Published var notas: [Doc] = []
     @Published var carregandoNotas = false
     @Published var erro: String?
+    @Published var avisoSenha: String?
 
     var logado: Bool { token != nil }
 
@@ -76,6 +77,25 @@ final class AppModel: ObservableObject {
         Session.limpar()
         token = nil
         notas = []
+    }
+
+    /// Troca a senha de quem ja esta logado (nao pede a senha antiga).
+    func trocarSenha(_ nova: String) async {
+        guard let t = token else {
+            avisoSenha = "Entre na conta primeiro"
+            return
+        }
+        let limpa = nova.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard limpa.count >= 8 else {
+            avisoSenha = "A senha precisa ter 8 caracteres ou mais"
+            return
+        }
+        do {
+            try await Api.definirSenha(token: t, novaSenha: limpa)
+            avisoSenha = "Senha salva. Use ela no proximo login."
+        } catch {
+            avisoSenha = "Nao deu: \(error.localizedDescription)"
+        }
     }
 
     func carregarNotas() async {

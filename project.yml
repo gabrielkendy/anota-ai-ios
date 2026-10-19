@@ -14,8 +14,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ai.anota.app
         PRODUCT_NAME: ANOTA AI
-        MARKETING_VERSION: "0.2.0"
-        CURRENT_PROJECT_VERSION: "2"
+        MARKETING_VERSION: "0.3.0"
+        CURRENT_PROJECT_VERSION: "3"
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: ANOTA AÍ
         INFOPLIST_KEY_NSMicrophoneUsageDescription: "O ANOTA AÍ usa o microfone para transcrever suas reunioes."

@@ -3,6 +3,8 @@ import SwiftUI
 struct NotesView: View {
     @EnvironmentObject var modelo: AppModel
     @State private var mostrarGravar = false
+    @State private var pedindoSenha = false
+    @State private var novaSenha = ""
 
     var body: some View {
         NavigationStack {
@@ -47,8 +49,35 @@ struct NotesView: View {
             .navigationTitle("ANOTA AÍ")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        pedindoSenha = true
+                    } label: {
+                        Image(systemName: "lock.rotation")
+                    }
+                    .accessibilityLabel("Trocar senha")
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Sair") { modelo.sair() }
                 }
+            }
+            .alert("Trocar senha", isPresented: $pedindoSenha) {
+                SecureField("Senha nova (8+)", text: $novaSenha)
+                Button("Salvar") {
+                    let s = novaSenha
+                    novaSenha = ""
+                    Task { await modelo.trocarSenha(s) }
+                }
+                Button("Cancelar", role: .cancel) { novaSenha = "" }
+            } message: {
+                Text("Escolha a senha nova da sua conta. Minimo 8 caracteres.")
+            }
+            .alert("Senha", isPresented: Binding(
+                get: { modelo.avisoSenha != nil },
+                set: { if !$0 { modelo.avisoSenha = nil } }
+            )) {
+                Button("Ok") { modelo.avisoSenha = nil }
+            } message: {
+                Text(modelo.avisoSenha ?? "")
             }
             .safeAreaInset(edge: .bottom) {
                 Button {
