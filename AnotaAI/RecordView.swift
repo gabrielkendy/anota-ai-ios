@@ -69,7 +69,7 @@ struct RecordView: View {
                     Text(e).font(.footnote).foregroundColor(.red)
                 }
 
-                Text("A nota e salva no seu ANOTA AI e aparece tambem no desktop.")
+                Text("A nota e salva no seu ANOTA AÍ e aparece tambem no desktop.")
                     .font(.footnote)
                     .foregroundColor(AnotaCores.cinzaTexto)
                     .multilineTextAlignment(.center)

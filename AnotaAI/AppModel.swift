@@ -3,7 +3,7 @@ import Foundation
 @MainActor
 final class AppModel: ObservableObject {
     @Published var token: String? = Session.token
-    @Published var email: String = Session.email ?? ""
+    @Published var email: String = Session.email ?? Session.ultimoEmail ?? ""
     @Published var notas: [Doc] = []
     @Published var carregandoNotas = false
     @Published var erro: String?
@@ -13,6 +13,48 @@ final class AppModel: ObservableObject {
     init() {
         if token != nil {
             Task { await carregarNotas() }
+        }
+    }
+
+    /// Login com Google: recebe o code do navegador e troca pela sessão.
+    func entrarComGoogle(code: String) async {
+        erro = nil
+        guard let verifier = Session.verifierGoogle else {
+            erro = "Login com Google expirou. Tente de novo."
+            return
+        }
+        do {
+            let sessao = try await Api.loginComGoogle(code: code, verifier: verifier)
+            let mail = sessao.email.isEmpty ? (Session.ultimoEmail ?? "") : sessao.email
+            Session.salvar(sessao.tokens, email: mail)
+            token = sessao.tokens.access_token
+            email = mail
+            await carregarNotas()
+        } catch {
+            erro = error.localizedDescription
+        }
+    }
+
+    /// "Esqueci minha senha": devolve a mensagem para mostrar na tela.
+    func recuperarSenha(_ mail: String) async -> String {
+        let limpo = mail.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard limpo.contains("@") else { return "Digite o e-mail da conta" }
+        do {
+            return try await Api.recuperarSenha(email: limpo)
+        } catch {
+            return error.localizedDescription
+        }
+    }
+
+    /// Define a senha de quem entrou pelo Google.
+    func definirSenha(_ nova: String) async -> String {
+        guard let t = token else { return "Entre na conta primeiro" }
+        guard nova.count >= 8 else { return "A senha precisa ter pelo menos 8 caracteres" }
+        do {
+            try await Api.definirSenha(token: t, novaSenha: nova)
+            return "Senha salva. Você já pode entrar com e-mail e senha."
+        } catch {
+            return error.localizedDescription
         }
     }
 

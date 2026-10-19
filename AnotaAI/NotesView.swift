@@ -44,7 +44,7 @@ struct NotesView: View {
                     .refreshable { await modelo.carregarNotas() }
                 }
             }
-            .navigationTitle("ANOTA AI")
+            .navigationTitle("ANOTA AÍ")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Sair") { modelo.sair() }

@@ -30,9 +30,57 @@ enum Api {
         return data
     }
 
-    static func login(email: String, senha: String) async throws -> Tokens {
-        let data = try await post("v1/auth", corpo: ["email": email, "password": senha])
+    static func login(email: String, senha: String, lembrar: Bool = true) async throws -> Tokens {
+        let data = try await post("v1/auth", corpo: ["email": email, "password": senha, "remember": lembrar])
         return try JSONDecoder().decode(Tokens.self, from: data)
+    }
+
+    private struct WorkosResp: Decodable {
+        struct T: Decodable {
+            struct U: Decodable {
+                let id: String?
+                let email: String?
+            }
+            let access_token: String
+            let refresh_token: String?
+            let user: U?
+        }
+        let tokens: T
+    }
+
+    /// Login com Google: troca o code do deep link pela sessão.
+    static func loginComGoogle(code: String, verifier: String) async throws -> SessaoGoogle {
+        let data = try await post(
+            "v1/workos-auth-complete",
+            corpo: ["code": code, "codeVerifier": verifier, "platform": "ios"]
+        )
+        let r = try JSONDecoder().decode(WorkosResp.self, from: data)
+        let tokens = Tokens(
+            access_token: r.tokens.access_token,
+            refresh_token: r.tokens.refresh_token,
+            user_id: r.tokens.user?.id
+        )
+        return SessaoGoogle(tokens: tokens, email: r.tokens.user?.email ?? "")
+    }
+
+    struct SessaoGoogle {
+        let tokens: Tokens
+        let email: String
+    }
+
+    /// Recuperar senha: pede o link por e-mail e devolve a mensagem do servidor.
+    static func recuperarSenha(email: String) async throws -> String {
+        let data = try await post("v1/recuperar-senha", corpo: ["email": email])
+        if let d = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let m = d["mensagem"] as? String {
+            return m
+        }
+        return "Se este e-mail tiver conta, o link para criar nova senha chegou nele."
+    }
+
+    /// Definir senha de quem entrou pelo Google (para entrar sem Google depois).
+    static func definirSenha(token: String, novaSenha: String) async throws {
+        _ = try await post("v1/definir-senha", corpo: ["nova_senha": novaSenha], token: token)
     }
 
     static func documentos(token: String) async throws -> [Doc] {
