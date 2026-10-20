@@ -14,7 +14,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ai.anota.app
         PRODUCT_NAME: ANOTA AI
-        MARKETING_VERSION: "0.3.0"
+        MARKETING_VERSION: "0.4.0"
         CURRENT_PROJECT_VERSION: "3"
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: ANOTA AÍ
