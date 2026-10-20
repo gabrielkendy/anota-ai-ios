@@ -50,6 +50,7 @@ struct NotesView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
+                        novaSenha = ""
                         pedindoSenha = true
                     } label: {
                         Image(systemName: "lock.rotation")
